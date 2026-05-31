@@ -18,6 +18,7 @@ Trabalho final da disciplina Introdução a Programação, com a professora Clá
 - C++
 - Python
 
-OBS.: Instalar as bibliotecas pandas e matplotlib para o gráfico em python rodar corretamente. :) 
+OBS.: Instalar as bibliotecas pandas e matplotlib para o gráfico em python rodar corretamente. :)
+
 Instalar no seu terminal: 
 pip install pandas pip install matplotlib
