@@ -10,7 +10,7 @@ Trabalho final da disciplina Introdução a Programação, com a professora Clá
 - Monitoramento de pressão por gráfico
 
 ## Como executar
-1. Compile o código em C++
+1. Baixe o repositório zipado e descompacte em uma pasta
 2. Execute o programa
 3. Utilize o menu para interagir com o sistema
 
