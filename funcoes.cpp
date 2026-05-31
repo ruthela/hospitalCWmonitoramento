@@ -2,6 +2,8 @@
 #include <fstream>
 #include "funcoes.h"
 #include <string>
+#include <cstdlib>  // rand()
+#include <ctime>    // time()
 
 using namespace std;
 
@@ -31,13 +33,14 @@ void registrarPaciente(){ //Registra os pacientes no array listapacientes
 	int controleMenu;
 	 
 	do{
-	if(totalPacientes>=pacientes)
+	if(totalPacientes>=pacientes) 
+	// Verifica se o array está preenchido
 	{
 		cout<<"Sala cheia! \nRetornando ao menu principal. \n";
 		return;
 	}
 		cout<<"Digite o nome do paciente: ";
-		cin.ignore(1000,'\n');
+		cin.ignore(1000,'\n'); 
 		getline(cin,nome);
 		
 		listaPacientes[totalPacientes] = nome;
@@ -45,7 +48,9 @@ void registrarPaciente(){ //Registra os pacientes no array listapacientes
 		
 		cout<<"Paciente cadastrado com sucesso! \n"<<endl;
 		
-		if(totalPacientes==pacientes){
+		if(totalPacientes==pacientes){ 
+		//Identifica se todos os leitos já foram preenchidos		
+		
 			cout<<"\n Sala lotada. Retornando ao menu principal. \n"<<endl;
 			return;
 		}
@@ -56,6 +61,7 @@ void registrarPaciente(){ //Registra os pacientes no array listapacientes
 			cout<<"Deseja cadastrar outro paciente?"<<endl;
 			cout<<"1 - Sim | 0 - Voltar ao menu principal "<<endl;
 			cin>>controleMenu;
+			
 			
 		if(controleMenu != 0 && controleMenu != 1)
 			cout<<"Digite uma opção válida!";
@@ -80,19 +86,18 @@ void listarPacientes(){ //Imprime os pacientes do array
 	
 }
 
-void registroPressao() {
-
+void escolherRegistroPressao(){
 	
-if (totalPacientes == 0) {
+	int escolha=0;
+	
+	if (totalPacientes == 0) {
     cout << "Nenhum paciente cadastrado! Retornando ao menu.\n";
     return;
 }
 
 	listarPacientes();
 
-    int pacienteEscolhido=0;
-
-    cout << "Escolha o paciente: ";
+    cout << "Escolha o leito do paciente desejado: ";
     cin >> pacienteEscolhido;
 
     if (pacienteEscolhido < 1 || pacienteEscolhido > totalPacientes) {
@@ -100,6 +105,51 @@ if (totalPacientes == 0) {
         return;
     }
     pacienteEscolhido--;
+	
+	do{
+		cout<<"Escolha como quer inserir as pressões do paciente: \n \n 1 - Gerar aleatoriamente \n 2 - Inserir manualmente \n ";
+		cin>>escolha;
+		
+		if(escolha==1)
+		gerarPressaoAleatoria(pacienteEscolhido);
+		
+		else if (escolha==2)
+		registroPressao(pacienteEscolhido);
+		
+		else
+		cout<<"Opção inválida!";
+		
+		
+	}while(escolha!=1 && escolha!=2);
+}
+
+void gerarPressaoAleatoria(int paciente) {
+        bool controladorPressao = false;
+
+        // Busca a posição vazia no array
+        for (int d = 0; d < dias; d++) {
+            for (int v = 0; v < vezesDia; v++) {
+
+                if (medicao[paciente][d][v][0] == 0) {
+                    medicao[paciente][d][v][0] = rand() % 91 + 90; // sistolica
+            		medicao[paciente][d][v][1] = rand() % 31 + 60; // diastolica
+                    controladorPressao = true;
+                }
+            }
+        }
+
+        //  Se não encontrou espaço livre
+        if (!controladorPressao) {
+        cout << "Todas as medicoes deste paciente ja foram registradas!\n";
+    } else {
+        cout << "Foram encontrados valores já preenchidos manualmente. \n Completando o restante da matriz com valores aleatórios. \n \n";
+    }
+
+
+    cout << "Pressões aleatórias geradas com sucesso!\n";
+}
+
+void registroPressao(int pacienteEscolhido) {
 
     int continuar;
 
@@ -160,7 +210,7 @@ if (totalPacientes == 0) {
         else if (turno == 1) cout << " (Tarde)\n";
         else cout << " (Noite)\n";
 
-        // Controle de vezes
+        // Controla opção de continuar preenchendo
         cout << "\n Deseja registrar outra pressao? \n";
         cout << "1 - Sim | 0 - Voltar ao menu principal \n";
         cin >> continuar;
@@ -192,20 +242,29 @@ void gerarCSV(int pacienteEscolhido) {
 
     arquivo << "dia,sistolica,diastolica\n";
 
-    for (int d = 0; d < dias; d++) {
+for (int d = 0; d < dias; d++) {
 
-        int somaSis = 0;
-        int somaDia = 0;
+    int somaSis = 0;
+    int somaDia = 0;
+    int contador = 0;
 
-        for (int v = 0; v < vezesDia; v++) {
+    for (int v = 0; v < vezesDia; v++) {
+        if (medicao[pacienteEscolhido][d][v][0] != 0) {
             somaSis += medicao[pacienteEscolhido][d][v][0];
             somaDia += medicao[pacienteEscolhido][d][v][1];
+            contador++;
         }
-
-        arquivo << d+1 << ","
-                << somaSis / vezesDia << ","
-                << somaDia / vezesDia << "\n";
     }
+
+    if (contador > 0) {
+        arquivo << d+1 << ","
+                << somaSis / contador << ","
+                << somaDia / contador << "\n";
+    } else {
+        arquivo << d+1 << ",0,0\n";
+    }
+}
+
 
     arquivo.close();
 

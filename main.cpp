@@ -2,6 +2,8 @@
 #include <string>
 #include <fstream>
 #include "funcoes.h"
+#include <cstdlib>  // rand()
+#include <ctime>    // time()
 
 using namespace std;
 main(){ //Programa principal
@@ -9,6 +11,7 @@ main(){ //Programa principal
 
 	system("chcp 65001>nul");
 	int opcao;
+	srand(time(0));
 	
 	cout<<"======================================="<<endl;
 	cout<<"PROGRAMA DE MONITORAMENTO DE PACIENTES"<<endl;
@@ -35,7 +38,7 @@ main(){ //Programa principal
 			break;
 		}
 		case 3:{
-			registroPressao(); // Função de registro de pressão
+			escolherRegistroPressao(); // Função de registro de pressão
 			break;
 		}
 		
