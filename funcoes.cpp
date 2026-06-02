@@ -27,6 +27,18 @@ int medicao[pacientes][dias][vezesDia][tiposPressao]; //array para registro da p
 string listaPacientes[pacientes]; //array para lista de pacientes
 
 // == Funções ==
+
+
+int lerInteiro() { // Função de validação de entrada que garante que as escolhas dos menus aceitem apenas números. Se o usuário inserir um texto no lugar do número, a função irá barrar e solicitar uma entrada válida.
+    int valor;
+    while (!(cin >> valor)) {
+        cin.clear();            
+        cin.ignore(1000, '\n'); 
+        cout << "Entrada inválida! Digite apenas o número: ";
+    }
+    return valor;
+}
+
 void registrarPaciente(){ //Registra os pacientes no array listapacientes
 
 	string nome;
@@ -60,7 +72,7 @@ void registrarPaciente(){ //Registra os pacientes no array listapacientes
 			
 			cout<<"Deseja cadastrar outro paciente?"<<endl;
 			cout<<"1 - Sim | 0 - Voltar ao menu principal "<<endl;
-			cin>>controleMenu;
+			controleMenu=lerInteiro();
 			
 			
 		if(controleMenu != 0 && controleMenu != 1)
@@ -98,7 +110,7 @@ void escolherRegistroPressao(){
 	listarPacientes();
 
     cout << "Escolha o leito do paciente desejado: ";
-    cin >> pacienteEscolhido;
+    pacienteEscolhido=lerInteiro();
 
     if (pacienteEscolhido < 1 || pacienteEscolhido > totalPacientes) {
         cout << "Paciente invalido!\n";
@@ -108,7 +120,7 @@ void escolherRegistroPressao(){
 	
 	do{
 		cout<<"Escolha como quer inserir as pressões do paciente: \n \n 1 - Gerar aleatoriamente \n 2 - Inserir manualmente \n ";
-		cin>>escolha;
+		escolha=lerInteiro();
 		
 		if(escolha==1)
 		gerarPressaoAleatoria(pacienteEscolhido);
@@ -123,31 +135,38 @@ void escolherRegistroPressao(){
 	}while(escolha!=1 && escolha!=2);
 }
 
-void gerarPressaoAleatoria(int paciente) {
-        bool controladorPressao = false;
-
-        // Busca a posição vazia no array
-        for (int d = 0; d < dias; d++) {
-            for (int v = 0; v < vezesDia; v++) {
-
-                if (medicao[paciente][d][v][0] == 0) {
-                    medicao[paciente][d][v][0] = rand() % 91 + 90; // sistolica
-            		medicao[paciente][d][v][1] = rand() % 31 + 60; // diastolica
-                    controladorPressao = true;
-                }
-            }
-        }
-
-        //  Se não encontrou espaço livre
-        if (!controladorPressao) {
-        cout << "Todas as medicoes deste paciente ja foram registradas!\n";
-    } else {
-        cout << "Foram encontrados valores já preenchidos manualmente. \n Completando o restante da matriz com valores aleatórios. \n \n";
-    }
-
-
-    cout << "Pressões aleatórias geradas com sucesso!\n";
-}
+		void gerarPressaoAleatoria(int paciente) {
+		        bool controladorPressao = false; //busca valores vazios no array
+		        bool temValor = false;
+		
+		        // Busca a posição vazia no array
+		        for (int d = 0; d < dias; d++) {
+		            for (int v = 0; v < vezesDia; v++) {
+		
+		                if (medicao[paciente][d][v][0] != 0) 
+						{	
+							temValor = true;
+						}
+						else{
+							
+							medicao[paciente][d][v][0] = rand() % 91 + 90; // sistolica
+		            		medicao[paciente][d][v][1] = rand() % 31 + 60; // diastolica
+		                    controladorPressao = true;
+							
+							} 
+		                }
+		            }
+		
+		        //  Se não encontrou espaço livre
+		        if (!controladorPressao) {
+		        cout << "Todas as medicoes deste paciente ja foram registradas!\n";
+		    } else {
+		    		
+		    		if(temValor)
+		        cout << "Foram encontrados valores já preenchidos manualmente. \n Completando o restante da matriz com valores aleatórios. \n \n";
+		    cout << "Pressões aleatórias geradas com sucesso!\n";
+			}   
+		}
 
 void registroPressao(int pacienteEscolhido) {
 
@@ -183,15 +202,15 @@ void registroPressao(int pacienteEscolhido) {
         do {
         	
             cout << "Pressao sistolica: ";
-            cin >> sistolica;
+            sistolica=lerInteiro();
 
             cout << "Pressao diastolica: ";
-            cin >> diastolica;
+            diastolica=lerInteiro();
             
             do{
             	cout << "\n Confirmar a inserção?\n";
             cout << "1 - Sim | 0 - Nao\n";
-            cin >> controleInsercao;
+            controleInsercao=lerInteiro();
             
             if(controleInsercao!=0  &&  controleInsercao!=1)
             	cout<<"Opção inválida!";
@@ -213,7 +232,7 @@ void registroPressao(int pacienteEscolhido) {
         // Controla opção de continuar preenchendo
         cout << "\n Deseja registrar outra pressao? \n";
         cout << "1 - Sim | 0 - Voltar ao menu principal \n";
-        cin >> continuar;
+        continuar=lerInteiro();
 
     } while (continuar == 1);
 }
@@ -223,7 +242,7 @@ void gerarGrafico() {
     listarPacientes();
 
     cout << "Escolha o leito em que o paciente está: ";
-    cin >> pacienteEscolhido;
+   	pacienteEscolhido=lerInteiro();
 
     if (pacienteEscolhido < 1 || pacienteEscolhido > totalPacientes) {
         cout << "Paciente invalido!\n";

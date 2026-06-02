@@ -27,7 +27,7 @@ main(){ //Programa principal
 	cout<<"4 - Gerar gráfico"<<endl;
 	cout<<"0 - Sair \n"<<endl;
 			
-	cin>>opcao;
+	opcao=lerInteiro();
 			switch(opcao){
 		case 1:{
 			registrarPaciente(); //Função de registro de pacientes
